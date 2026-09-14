@@ -1,6 +1,6 @@
 """
     Точка входа в приложение Task Manager
-    version 0.0.4
+    version 0.0.5
     --- description ---
     проложение может сохранять задачи,
     редактировать, выдает список задач
@@ -14,10 +14,19 @@ def show_collection(task_list):
     print("~" * 30)
 
 """функция выводит уведомления в консоль"""
-def show_massage(flag: bool ,massage=None):
-    if not flag:
-        print(f"Новая задача {massage} успешно добавлена!")
+def show_message(message=None, mes_action=None):
+    if message is not None:
+        print(f" {message} успешно {mes_action} !")
     input("Нажмите ENTER для продолженяи")
+
+def check_confirm(action: str):
+    confirm = input("  Да / Нет")
+    if not(confirm.startswith('y')
+            or confirm.startswith('Y')):
+        print(action)
+        return False
+    else:
+        return True
 
 is_running = True
 collection = ["task 1", "task 2"] # list
@@ -34,27 +43,25 @@ while is_running:
     match str(choice_user):
         case '1':
             show_collection(collection)
-            show_massage(False)
+            show_message()
         case '2':
             add_task = input("Введите имя задачи для добавления")
             collection.append(add_task)
-            show_massage(add_task)
+            show_message(add_task, "добавлена")
         case '3':
             show_collection(collection)
             select_task = int(input("Введите номер задачи"))
             edit_task = input("Введите новое имя задачи для редактирования")
             collection[select_task - 1] = edit_task
-            print(f"{edit_task} успешно переименована!")
-            input("Нажмите ENTER для продолженяи")
+            show_message(edit_task, "переименована")
         case '4':
             show_collection(collection)
             delete_task = int(input("Введите номер задачи для удаления"))
-            collection.pop(delete_task - 1)
-            print(f"-> {delete_task} успешно удалена!")
-            input("Нажмите ENTER для продолженяи")
+            if check_confirm("Удаление прошло успешно!"):
+                collection.pop(delete_task - 1)
+                show_message(delete_task, "удалена")
         case '5':
-            is_running = False
-            print("До свидания!")
+            is_running = check_confirm("До свидания!")
         case _:
             print("Такого пункта нет!")
 
